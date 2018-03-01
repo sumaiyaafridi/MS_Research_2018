@@ -1,0 +1,36 @@
+from bidi.algorithm import get_display 
+import PIL.Image, PIL.ImageFont, PIL.ImageDraw 
+import arabic_reshaper
+import itertools
+import os
+#Total 38 characters
+#unicode_text = u"\u0627\u0628\u067E\u062A\u0679\u062B\u062C\u0686\u062D\u062E\u062F\u0688\u0630\u0631\u0691\u0632\uFB8B\u0633\u0634\u0635\u0636\u0637\u0638\u0639\u063A\u0641\u0642\u06A9\u06AF\u0644\u0645\u06BA\u0646\u0648\u0647\u0621\u0649\u06D2"
+#36 charcaters 
+unicode_text = u"\u0627\u0628\u067E\u062A\u0679\u062B\u062C\u0686\u062D\u062E\u062F\u0688\u0630\u0631\u0691\u0632\uFB8B\u0633\u0634\u0635\u0636\u0637\u0638\u0639\u063A\u0641\u0642\u06A9\u06AF\u0644\u0645\u06BA\u0646\u0648\u0621\u06D2"
+#unicode_text = u"\u0627\uFE90\uFB57\uFE96\uFB67\uFE9A\uFE9D\uFB7A\uFEA1\uFEA5\uFEA9\uFEAD\uFEAF\uFEB1\uFEB5\uFEB9\uFEBD\uFEC1\uFEC5\uFEC9\uFECD\uFED1\uFED5\uFEDB\uFEDD\uFEE1\uFEE5\uFEE6\uFEED\uFBA6\uFBFC\uFBFF"
+
+#unicode_text=u"\u06F1"+ u"\u06CC"+ u"\u06A9" 
+list_of_letters = list (unicode_text) 
+folder = 1 
+n=1
+for i in range(1,n+1): 
+    for word in itertools.permutations( list_of_letters,i): 
+        char = u''.join(word) 
+        t1 = arabic_reshaper.reshape(char) 
+        W,H= (100, 100)
+        img= PIL.Image.new('RGBA', (W, H), (255, 255, 255),)
+        draw = PIL.ImageDraw.Draw(img)   
+        # font = PIL.ImageFont.truetype( r"C:\Users\Sumayyah\Downloads\arabic-typesetting\arabtype.ttf", 40)
+        draw.font = PIL.ImageFont.truetype( r"C:\Users\Sumayyah\AnacondaProjects\Research-Code\fonts\adobe-arabic-bold-1.ttf", 36)
+       # w, h = draw.textsize(char)
+        t2 = get_display(t1) 
+        w, h = draw.textsize(t2)
+        #w, h = font.getsize(t2.encode('utf-8'))
+       # draw.text((5,5), ' ' + t2, fill="#000000", font=font)
+        draw.text(((W-w)/2,(H-h)/2),t2, fill="#000000")
+        path = 'E:\Dataset_Final\Dataset-adobe-arabic-bold-1\\'+ str(folder)
+        if not os.path.exists(path):
+            os.makedirs(path)
+   # img.show()
+        img.save(path + '\\' + char+'.png', "PNG")
+        folder += 1
