@@ -1,0 +1,18 @@
+import os
+import shutil
+
+path='E:/Dataset_Final/Dataset-3characters-only - CC -DC/'
+
+def count_em(path):
+    x = 0
+    files_count = 0
+    for root, dirs, files in os.walk(path):
+        files_count = (len(files))
+        if files_count >1:
+            shutil.rmtree(root)
+        x = x + 1
+        print("Images:", files_count, "Directory:", x)
+    return files_count
+
+
+count_em(path)
