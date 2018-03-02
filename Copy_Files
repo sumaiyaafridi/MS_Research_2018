@@ -1,0 +1,13 @@
+from PIL import Image
+import os
+import shutil
+path="E:/Dataset_Final/newdataset/3/"
+dst_dir = "E:/Dataset_Final/newdataset/13"
+def count_em(path):
+    for root, dirs, files in sorted(os.walk(path)):
+        for file_ in files:
+            full_file_path = os.path.join(root, file_)
+            print (full_file_path)
+            shutil.copy(full_file_path, dst_dir)
+         
+count_em(path)
