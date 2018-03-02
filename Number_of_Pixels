@@ -10,3 +10,20 @@ for root, dirs, files in os.walk(path):
             n_white_pix = np.sum(img == 255)
             print(os.path.join(root, file_))
             print('Number of white pixels:', n_white_pix)
+            
+#############################################################################3            
+from PIL import Image
+import os.path
+import cv2
+import numpy as np
+path="C:/Python36/cclabel/n12/"
+for root, dirs, files in os.walk(path):
+        for file_ in files:
+            #print(os.path.join(root, file_))
+            img1= (os.path.join(root, file_))
+            print (img1)
+            img = cv2.imread('C:/Python36/cclabel/n12/1/ا.png', cv2.IMREAD_GRAYSCALE)
+            print (img)
+            n_white_pix = np.sum(img == 255)
+            n_black_pix = np.sum(img == 0)
+            print('Number of white pixels:', n_white_pix, n_black_pix)
