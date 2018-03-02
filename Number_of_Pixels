@@ -1,0 +1,12 @@
+from PIL import Image
+import os.path
+import cv2
+import numpy as np
+path="E:/Dataset_Final/Dataset_Fonts/Dataset-adobe-arabic-bold-36f/cc/"
+for root, dirs, files in os.walk(path):
+        for file_ in files:
+           # img = Image.open(os.path.join(root, file_), cv2.IMREAD_GRAYSCALE)
+            img = cv2.imread(os.path.join(root, file_), cv2.IMREAD_GRAYSCALE)
+            n_white_pix = np.sum(img == 255)
+            print(os.path.join(root, file_))
+            print('Number of white pixels:', n_white_pix)
