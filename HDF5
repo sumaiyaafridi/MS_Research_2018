@@ -1,1 +1,49 @@
 
+import numpy 
+numpy.random.seed(1337)
+
+import h5py
+import keras
+from keras.models import Sequential, Model
+from keras.layers import Dense, Activation, Flatten, Input, MaxPooling2D, Dropout
+from keras.layers import Conv2D, Embedding
+from keras.optimizers import SGD, rmsprop
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.utils import class_weight
+from sklearn.utils.class_weight import compute_class_weight
+from sklearn.preprocessing import LabelEncoder
+import os
+from PIL import Image
+
+batch_size=128  #128
+num_classes=4 #37 #1227 #40499 #4
+epochs=100
+
+os.chdir("E:");
+path="Dataset_Final(March)/Level_1";
+classes=os.listdir(path)
+x=[]#Datapoints 
+y=[]#labels 
+for fol in classes:
+    imgfiles=os.listdir(path+u'\\'+fol);
+    for img in imgfiles:
+        im=Image.open(path+u'\\'+fol+u'\\'+img);
+        im=numpy.asarray(im)/255;
+        x.append(im)
+        y.append(fol)
+x=numpy.array(x)
+y=numpy.array(y)
+
+#####  memory error  ############################
+
+hf=h5py.File('E:Dataset_Final(March)/Datasets.hdf5','w')
+hf.create_dataset('Level_1', data=x)
+hf.close()
+
+hf=h5py.File('E:Dataset_Final(March)/Dataset.hdf5','r')
+x=hf.get('Two')
+x
+y=['1', '2', '3']
+
+x=numpy.array(x)
+x.shape
