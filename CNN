@@ -1,0 +1,102 @@
+datagen=ImageDataGenerator(rotation_range=40,
+                            width_shift_range=0.2,
+                            height_shift_range=0.2,
+                          rescale=1./255,
+                          shear_range=0.2,
+                          zoom_range=0.2,
+                          horizontal_flip=True)
+
+batch_size=28
+num_classes=37
+epochs=100
+
+os.chdir("E:");
+path="Dataset_Final(March)/One";
+
+def gen(path, batch_size=28):
+    classes=os.listdir(path)
+    batchCount=0
+    while 1:
+        x=[]#Datapoints 
+        y=[]#labels 
+        for fol in classes:
+            if batchCount==0:
+                imgfiles=os.listdir(path+u'\\'+fol);
+                for img in imgfiles:
+                    im=Image.open(path+u'\\'+fol+u'\\'+img);
+                    im=numpy.asarray(im)/255;
+                    x.append(im)
+                    y.append(fol)
+                    batchCount+=1
+                    if batchCount>=batch_size:
+                        batchCount=0
+                x=numpy.array(x)
+                y=numpy.array(y)
+                print(x)
+
+x=x.reshape((-1,100,100,1))
+
+n=x.shape[0]
+randomize=numpy.arange(n)
+numpy.random.shuffle(randomize)
+randomize
+x=x[randomize]
+y=y[randomize]
+
+test_split=round(n*2/3)
+x_train=x[:test_split]
+y_train=y[:test_split]
+x_test=x[test_split:]
+y_test=y[test_split:]
+
+x_train=x_train.astype('float32')
+x_test=x_test.astype('float32')
+
+x_train/=255
+x_test/=255
+
+datagen.fit(x_train)
+
+
+encoder = LabelEncoder()
+encoder.fit(y_train)
+y_train= encoder.transform(y_train)
+#y_test= encoder.transform(y_test)
+
+class_weight_list = compute_class_weight('balanced', numpy.unique(y_train), y_train)
+class_weight = dict(zip(numpy.unique(y_train), class_weight_list))
+
+y_train=keras.utils.to_categorical(y_train, num_classes)
+y_test=keras.utils.to_categorical(y_test, num_classes)
+
+inputs=Input(shape=(100,100,1))
+
+x=Conv2D(16,(3,3), padding='same')(inputs)
+x=Activation('relu')(x)
+x=Conv2D(8,(3,3))(x)
+x=Activation('relu')(x)
+x=MaxPooling2D(pool_size=(2,2))(x)
+x=Dropout(0.2)(x)
+x=Flatten()(x)
+x=Dense(num_classes)(x)
+x=Activation('softmax')(x)
+output=Activation('softmax')(x)
+model=Model([inputs], output)
+
+
+opt=keras.optimizers.rmsprop(lr=0.00001,decay=1e-6 )
+model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
+
+
+import h5py
+from keras.callbacks import ModelCheckpoint
+filepath='Checkpoints_One/Epoch_10/weights-improvement-{epoch:2d}-{val_acc:.2f}.hdf5'
+checkpoint=ModelCheckpoint(filepath, monitor='val_acc', verbose=1, mode='max')
+
+hist=model.fit_generator(datagen.flow(x_train, y_train, 
+               batch_size=batch_size),
+               epochs=epochs,
+               validation_data=(x_test, y_test),
+               callbacks=[checkpoint],
+               class_weight=class_weight
+               )
