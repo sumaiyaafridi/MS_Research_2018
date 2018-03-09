@@ -13,28 +13,44 @@ epochs=100
 os.chdir("E:");
 path="Dataset_Final(March)/One";
 
-def gen(path, batch_size=28):
-    classes=os.listdir(path)
-    batchCount=0
-    while 1:
-        x=[]#Datapoints 
-        y=[]#labels 
-        for fol in classes:
-            if batchCount==0:
-                imgfiles=os.listdir(path+u'\\'+fol);
-                for img in imgfiles:
-                    im=Image.open(path+u'\\'+fol+u'\\'+img);
-                    im=numpy.asarray(im)/255;
-                    x.append(im)
-                    y.append(fol)
-                    batchCount+=1
-                    if batchCount>=batch_size:
-                        batchCount=0
-                x=numpy.array(x)
-                y=numpy.array(y)
-                print(x)
+import matplotlib.image as mpimg
+os.chdir("E:");
+path="Dataset_Final(March)/Level_0";
+# path="newdataset/1";
+# path="newdataset/2";
+# path="Dataset-3characters-only - CC -DC";
+# path="Dataset_3_MoreFonts/1";
+classes=os.listdir(path)
+x=[]#Datapoints 830
+y=[]#labels 3
+for fol in classes:
+    #print (fol)
+    imgfiles=os.listdir(path+u'\\'+fol);
+    #print (imgfiles)
+    for img in imgfiles:
+       # print (img)
+        #im=Image.open(path+u'\\'+fol+u'\\'+img);
+        im=numpy.array(Image.open(path+u'\\'+fol+u'\\'+img)).astype(float);
+        #im=mpimg.imread(path+u'\\'+fol+u'\\'+img)
+        #im.show()
+        #im=numpy.asarray(im)/255;
+       # print(im)
+        x.append(im)
+        y.append(fol)
+x=numpy.array(x)
+#print (x)
+y=numpy.array(y)
+#print(y)
+numpy.savez('E:Dataset_Final(March)/L0_X',x)
+numpy.savez('E:Dataset_Final(March)/L0_Y',y)
 
-x=x.reshape((-1,100,100,1))
+x=numpy.load('E:Dataset_Final(March)/xlevel0.npz')
+x=x['arr_0']
+#print (numpy.array(x).shape)
+y=numpy.load('E:Dataset_Final(March)/ylevel0.npz')
+y=y['arr_0']
+print(x.shape)
+print(y.shape)
 
 n=x.shape[0]
 randomize=numpy.arange(n)
